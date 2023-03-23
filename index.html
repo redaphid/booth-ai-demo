@@ -9,6 +9,8 @@
     import { marked } from 'https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js'
     import { h, render } from 'https://esm.sh/preact'
     import htm from 'https://esm.sh/htm'
+
+
     const Products = ({ products }) => {
       return html`
         <div class="products">
@@ -19,31 +21,23 @@
       `
     }
     const Product = ({ product }) => {
-      console.log({product})
-      const productImage = product.image_urls[0]
       return html`
         <div class="product">
-          <h2>${product.product_name}</h2>
-          <img src=${productImage} alt=${product.product_name}/>
-          <div class="batches">
-            ${product.generation_batches.map(batch => html`
-              <${Batch} productImage=${productImage} batch=${batch}/>
-            `)}
+          ${product.map(result => html`
+            <${Result} result=${result}/>
+          `)}
         </div>
       `
     }
-    const Batch = ({ batch }) => {
-      console.log({batch})
+    const Result = ({ result }) => {
       return html`
-        <div class="batch">
-          <h3>${batch.batch_name}</h3>
-          <p>${batch.description}</p>
-          <p>${batch.price}</p>
-          <p>${batch.quantity}</p>
+        <div class="result">
+          <img src=${result.productImage.url} />
+          <img src=${result.backgroundImage.url} />
         </div>
       `
     }
-    const App = ({ title,products }) => {
+    const App = ({ title, products }) => {
       return html`
         <div class="app">
           <h1>${title}</h1>
@@ -53,9 +47,29 @@
     }
     const res = await fetch('data/inventory.json').then(res => res.json())
 
+    const batchToProduct = (batch) =>{
+      console.log({ batch })
+        const { firebase_record_json: firebase } = batch
+        return firebase.results.map(result => {
+            return {
+                productImage: firebase.image,
+                backgroundImage: result.image
+            }
+        })
+    }
+
+
+    const products = res.map(product => {
+        const { generation_batches } = product
+        return generation_batches.map(batchToProduct).reduce((acc, val) => acc.concat(val), [])
+      return product
+    })
+
+    console.log({ products })
+
     const html = htm.bind(h)
-    render(html`<${App} title="HI" products=${res}/>`, document.body)
-    </script>
+    render(html`<${App} title="HI" products=${products}/>`, document.body)
+  </script>
 
 </head>
 
