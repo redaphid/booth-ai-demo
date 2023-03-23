@@ -19,9 +19,12 @@
       `
     }
     const Product = ({ product }) => {
+      console.log(product)
       return html`
         <div class="product">
           <h2>${product.product_name}</h2>
+          ${product.image_urls[0]}
+          <img src=${product.image_urls[0]} alt=${product.product_name}/>
         </div>
       `
     }
