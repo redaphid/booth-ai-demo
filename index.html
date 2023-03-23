@@ -9,7 +9,6 @@
     import { marked } from 'https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js'
     import { h, render } from 'https://esm.sh/preact'
     import htm from 'https://esm.sh/htm'
-    const res = await fetch('data/inventory.json').then(res => res.json())
     const Products = ({ products }) => {
       return html`
         <div class="products">
@@ -26,16 +25,18 @@
         </div>
       `
     }
-    const App = ({ title }) => {
+    const App = ({ title,products }) => {
       return html`
         <div class="app">
           <h1>${title}</h1>
-          <${Products} products=${res}/>
+          <${Products} products=${products}/>
         </div>
       `
     }
+    const res = await fetch('data/inventory.json').then(res => res.json())
+
     const html = htm.bind(h)
-    render(html`<${App} title="HI"/>`, document.body)
+    render(html`<${App} title="HI" products=${res}/>`, document.body)
     </script>
 
 </head>
