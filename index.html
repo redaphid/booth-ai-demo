@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="styles/main.css" type="text/css" rel="stylesheet">
+  <script type="module">
+    import { marked } from 'https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js'
+    import { h, render } from 'https://esm.sh/preact'
+    import htm from 'https://esm.sh/htm'
+    const res = await fetch('data/inventory.json').then(res => res.json())
+    const Products = ({ products }) => {
+      return html`
+        <div class="products">
+          ${products.map(product => html`
+            <div class="product">
+              <h2>${product.class_name}</h2>
+            </div>
+          `)}
+        </div>
+      `
+    }
+    const App = ({ title }) => {
+      return html`
+        <div class="app">
+          <h1>${title}</h1>
+          <${Products} products=${res}/>
+        </div>
+      `
+    }
+    const html = htm.bind(h)
+    render(html`<${App} title="HI"/>`, document.body)
+    </script>
+
+</head>
+
+<body></body>
+
+</html>
